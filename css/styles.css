@@ -1,0 +1,52 @@
+html {
+  font-family: "Montserrat", sans-serif;
+  background: linear-gradient(to bottom right, aquamarine, lightblue);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+#container {
+  width: 600px;
+  height: 500px;
+  margin: 0 auto;
+  position: relative;
+  top: 50px;
+  background-color: white;
+  border-radius: 20px;
+  box-shadow: 0 10px 60px rgba(54, 141, 195, 0.7);
+  text-align: center;
+}
+
+h1 {
+  padding-top: 20px;
+  font-size: 50px;
+}
+
+#gameboard {
+  margin: 20px auto;
+  width: 384px;
+  height: 380px;
+  background-color: lightgray;
+  border: 3px solid black;
+  border-radius: 10px;
+}
+
+.cell {
+  position: relative;
+  top: 4px;
+  margin: 5px 2px;
+  border-radius: 4px;
+  height: 120px;
+  width: 120px;
+  margin: 0;
+  vertical-align: 0;
+  line-height: 0;
+  display: inline-block;
+  border: 1px solid black;
+  background-color: burlywood;
+}
+
+.cell:hover {
+  cursor: pointer;
+  background-color: rgba(0, 0, 0, 0.1);
+}
