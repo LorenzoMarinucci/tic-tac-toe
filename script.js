@@ -49,7 +49,13 @@ const Gameboard = (() => {
       alert("TIE");
     } else GameInfo.isPlayerOneTurn = !GameInfo.isPlayerOneTurn;
   };
-  const reset = 0;
+  const reset = () => {
+    _gameboard = _gameboard.map(() => 0);
+    cells.forEach(cell => {
+      cell.textContent = "";
+      cell.removeAttribute("marked");
+    });
+  };
   return { input, reset };
 })();
 
@@ -64,7 +70,7 @@ const GameDisplay = (() => {
     },
     resetGame = 0,
     inGame = () => _inGame;
-  return { changeGameStatus, resetGame, inGame };
+  return { changeGameStatus, inGame };
 })();
 
 const GameInfo = (() => {
@@ -95,4 +101,9 @@ modeSelectors.forEach(mode =>
 play.addEventListener("click", () => GameDisplay.changeGameStatus());
 goHome.addEventListener("click", () => {
   GameDisplay.changeGameStatus();
+});
+
+restart.addEventListener("click", () => {
+  Gameboard.reset();
+  GameInfo.isPlayerOneTurn = GameInfo.PlayerOneStarts;
 });
