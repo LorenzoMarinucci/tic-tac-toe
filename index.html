@@ -8,15 +8,37 @@
       href="https://fonts.googleapis.com/css?family=Montserrat:900&display=swap"
       rel="stylesheet"
     />
-    <link href="https://fonts.googleapis.com/css?family=Indie+Flower&display=swap" rel="stylesheet">
+    <link
+      href="https://fonts.googleapis.com/css?family=Indie+Flower&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="css/reset.css" type="text/css" media="all" />
     <link rel="stylesheet" href="css/styles.css" type="text/css" media="all" />
   </head>
   <body>
     <div id="container">
-      <h1>Tic Tac Toe</h1>
-      <div id="home"></div>
+      <div id="home" active>
+        <h1>Tic Tac Toe</h1>
+
+        <div id="selectMode">
+          Select Mode
+          <br />
+          <button id="singleplayer" class="mode" selected>Singleplayer</button>
+          <button id="multiplayer" class="mode">Multiplayer</button>
+        </div>
+        <button id="play">Play Now!</button>
+      </div>
       <div id="game">
+        <div id="scores">
+          <div id="player1Score" class="score">
+            Player1 <br />
+            <span>0</span>
+          </div>
+          <div id="ties" class="score">Ties <br /><span>0</span></div>
+          <div id="player2Score" class="score">
+            Player2 <br /><span>0</span>
+          </div>
+        </div>
         <div id="gameboard">
           <div class="cell" data-index="0"></div>
           <div class="cell" data-index="1"></div>
@@ -29,6 +51,15 @@
           <div class="cell" data-index="6"></div>
           <div class="cell" data-index="7"></div>
           <div class="cell" data-index="8"></div>
+        </div>
+        <div id="buttons">
+          <button id="goHome">
+            <img id="homeImage" src="images/home.png" />Home
+          </button>
+          <button id="restart">
+            <img id="restartImage" src="images/restart.png" />
+            Restart
+          </button>
         </div>
       </div>
     </div>

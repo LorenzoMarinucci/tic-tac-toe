@@ -1,6 +1,10 @@
 "use strict";
 
-const cells = document.querySelectorAll(".cell");
+const cells = document.querySelectorAll(".cell"),
+  modeSelectors = document.querySelectorAll(".mode"),
+  play = document.getElementById("play"),
+  goHome = document.getElementById("goHome"),
+  restart = document.getElementById("restart");
 
 const Gameboard = (() => {
   const _combinations = [
@@ -51,7 +55,13 @@ const Gameboard = (() => {
 
 const GameDisplay = (() => {
   let _inGame = false;
-  const changeGameStatus = 0,
+  const _home = document.getElementById("home"),
+    _game = document.getElementById("game"),
+    changeGameStatus = () => {
+      _inGame = !_inGame;
+      _home.toggleAttribute("active");
+      _game.toggleAttribute("active");
+    },
     resetGame = 0,
     inGame = () => _inGame;
   return { changeGameStatus, resetGame, inGame };
@@ -71,3 +81,18 @@ cells.forEach(cell =>
     }
   })
 );
+
+modeSelectors.forEach(mode =>
+  mode.addEventListener("click", e => {
+    if (!e.target.hasAttribute("selected")) {
+      modeSelectors[0].toggleAttribute("selected");
+      modeSelectors[1].toggleAttribute("selected");
+      GameInfo.isPvp = !GameInfo.isPvP;
+    }
+  })
+);
+
+play.addEventListener("click", () => GameDisplay.changeGameStatus());
+goHome.addEventListener("click", () => {
+  GameDisplay.changeGameStatus();
+});
