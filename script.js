@@ -14,7 +14,9 @@ const cells = document.querySelectorAll(".cell"),
   player2Div = document.getElementById("player2Score"),
   tiesDiv = document.getElementById("ties"),
   message = document.getElementById("message"),
-  scores = document.getElementById("scores");
+  scores = document.getElementById("scores"),
+  difficulty = document.getElementById("difficulty"),
+  difficultyButtons = document.querySelectorAll("#difficulty button");
 
 let player1 = null,
   player2 = null;
@@ -123,8 +125,9 @@ const GameDisplay = (() => {
 const GameInfo = (() => {
   let PlayerOneStarts = true,
     isPlayerOneTurn = true,
-    isPvP = false;
-  return { PlayerOneStarts, isPlayerOneTurn, isPvP };
+    isPvP = false,
+    easyMode = true;
+  return { PlayerOneStarts, isPlayerOneTurn, isPvP, easyMode };
 })();
 
 cells.forEach(cell =>
@@ -138,9 +141,9 @@ cells.forEach(cell =>
 modeSelectors.forEach(mode =>
   mode.addEventListener("click", e => {
     if (!e.target.hasAttribute("selected")) {
-      modeSelectors[0].toggleAttribute("selected");
-      modeSelectors[1].toggleAttribute("selected");
+      modeSelectors.forEach(mode => mode.toggleAttribute("selected"));
       GameInfo.isPvP = !GameInfo.isPvP;
+      difficulty.toggleAttribute("active");
       pvpForm.toggleAttribute("active");
     }
   })
@@ -178,3 +181,12 @@ restart.addEventListener("click", () => {
   Gameboard.reset();
   GameInfo.isPlayerOneTurn = GameInfo.PlayerOneStarts;
 });
+
+difficultyButtons.forEach(button =>
+  button.addEventListener("click", e => {
+    if (!e.target.hasAttribute("selected")) {
+      difficultyButtons.forEach(button => button.toggleAttribute("selected"));
+      GameInfo.easyMode = !GameInfo.easyMode;
+    }
+  })
+);
