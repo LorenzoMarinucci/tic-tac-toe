@@ -23,8 +23,8 @@ const Prototype = () => {
 
 const Player = input => {
   const name = input;
-  let points = 0;
-  return { name, points };
+  let score = 0;
+  return { name, score };
 };
 
 const Gameboard = (() => {
@@ -67,7 +67,10 @@ const Gameboard = (() => {
     )
       alert("WIN");
     else if (_checkTie()) {
-      alert("TIE");
+      reset();
+      tiesDiv.childNodes[2].textContent = ++parseInt(tiesDiv[2].textContent);
+      GameInfo.PlayerOneStarts = !GameInfo.PlayerOneStarts;
+      GameInfo.isPlayerOneTurn = GameInfo.PlayerOneStarts;
     } else GameInfo.isPlayerOneTurn = !GameInfo.isPlayerOneTurn;
   };
   const reset = () => {
@@ -123,7 +126,7 @@ modeSelectors.forEach(mode =>
 play.addEventListener("click", () => {
   player1 = player1Name.value ? Player(player1Name.value) : Player("Player 1");
   player1Div.childNodes[0].textContent = player1.name;
-  player1Div.childNodes[1].textContent = player1.score;
+  player1Div.childNodes[2].textContent = player1.score;
   player1Name.value = null;
   if (GameInfo.isPvP)
     player2 = player2Name.value
@@ -131,16 +134,20 @@ play.addEventListener("click", () => {
       : Player("Player 2");
   else player2 = Player("AI");
   player2Div.childNodes[0].textContent = player2.name;
-  player2Div.childNodes[1].textContent = player2.score;
+  player2Div.childNodes[2].textContent = player2.score;
   player2Name.value = null;
+  tiesDiv.childNodes[2].textContent = 0;
   GameDisplay.changeGameStatus();
   GameDisplay.adjustWidth(
     player1Div.offsetWidth + player2Div.offsetWidth + tiesDiv.offsetWidth + 40
   );
+  GameInfo.PlayerOneStarts = true;
+  GameInfo.isPlayerOneTurn = true;
 });
 
 goHome.addEventListener("click", () => {
   GameDisplay.changeGameStatus();
+  container.style.width = CONTAINER_WIDTH + "px";
   Gameboard.reset();
 });
 
