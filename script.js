@@ -19,10 +19,6 @@ const cells = document.querySelectorAll(".cell"),
 let player1 = null,
   player2 = null;
 
-const Prototype = () => {
-  const addPoint = () => null;
-};
-
 const Player = input => {
   const name = input;
   let score = 0;
@@ -45,28 +41,25 @@ const Gameboard = (() => {
     element.textContent = _gameboard[element.getAttribute("data-index")];
   };
   const _checkWinner = arrays => {
-    _winningCombination = arrays.find(
+    return arrays.find(
       array =>
         _gameboard[array[0]] == _gameboard[array[1]] &&
         _gameboard[array[1]] == _gameboard[array[2]]
     );
-    return _winningCombination;
   };
   const _checkTie = () => _gameboard.indexOf(0) == -1;
-  let _winningCombination = "";
   const input = function(e) {
     _gameboard[e.target.getAttribute("data-index")] = GameInfo.isPlayerOneTurn
       ? "X"
       : "O";
     e.target.toggleAttribute("marked");
     _render(e.target);
-    if (
-      _checkWinner(
-        _combinations.filter(array =>
-          array.includes(parseInt(e.target.getAttribute("data-index")))
-        )
+    let winningCombination = _checkWinner(
+      _combinations.filter(array =>
+        array.includes(parseInt(e.target.getAttribute("data-index")))
       )
-    ) {
+    );
+    if (winningCombination) {
       if (GameInfo.isPlayerOneTurn) {
         player1Div.childNodes[2].textContent = ++player1.score;
         message.textContent = `${player1.name} `;
@@ -76,10 +69,12 @@ const Gameboard = (() => {
       }
       message.textContent += "wins!";
       GameDisplay.toggleMessage();
+      GameDisplay.toggleCells(winningCombination);
       setTimeout(() => {
         reset();
         GameDisplay.toggleMessage();
-      }, 1500);
+        GameDisplay.toggleCells(winningCombination);
+      }, 2000);
       GameInfo.PlayerOneStarts = !GameInfo.PlayerOneStarts;
       GameInfo.isPlayerOneTurn = GameInfo.PlayerOneStarts;
     } else if (_checkTie()) {
@@ -114,17 +109,21 @@ const GameDisplay = (() => {
     },
     adjustWidth = sum =>
       (container.style.width = (sum > 410 ? sum + 60 : CONTAINER_WIDTH) + "px"),
+    toggleCells = winningCombination =>
+      winningCombination.forEach(index =>
+        cells[index].toggleAttribute("winner")
+      ),
     toggleMessage = () => {
       scores.toggleAttribute("hidden");
       message.toggleAttribute("hidden");
     };
-  return { changeGameStatus, adjustWidth, toggleMessage };
+  return { changeGameStatus, adjustWidth, toggleMessage, toggleCells };
 })();
 
 const GameInfo = (() => {
   let PlayerOneStarts = true,
     isPlayerOneTurn = true,
-    isPvP = true;
+    isPvP = false;
   return { PlayerOneStarts, isPlayerOneTurn, isPvP };
 })();
 
@@ -141,7 +140,7 @@ modeSelectors.forEach(mode =>
     if (!e.target.hasAttribute("selected")) {
       modeSelectors[0].toggleAttribute("selected");
       modeSelectors[1].toggleAttribute("selected");
-      GameInfo.isPvp = !GameInfo.isPvP;
+      GameInfo.isPvP = !GameInfo.isPvP;
       pvpForm.toggleAttribute("active");
     }
   })
