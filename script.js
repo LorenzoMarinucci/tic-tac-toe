@@ -64,9 +64,14 @@ const Gameboard = (() => {
           array.includes(parseInt(e.target.getAttribute("data-index")))
         )
       )
-    )
-      alert("WIN");
-    else if (_checkTie()) {
+    ) {
+      if (GameInfo.isPlayerOneTurn)
+        player1Div.childNodes[2].textContent = ++player1.score;
+      else player2Div.childNodes[2].textContent = ++player2.score;
+      reset();
+      GameInfo.PlayerOneStarts = !GameInfo.PlayerOneStarts;
+      GameInfo.isPlayerOneTurn = GameInfo.PlayerOneStarts;
+    } else if (_checkTie()) {
       reset();
       tiesDiv.childNodes[2].textContent =
         1 + parseInt(tiesDiv.childNodes[2].textContent);
