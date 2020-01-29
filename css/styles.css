@@ -38,7 +38,7 @@ h1 {
 }
 
 #selectMode {
-  margin-top: 30px;
+  margin-top: 10px;
   font-size: 50px;
   background-color: white;
 }
@@ -81,7 +81,7 @@ input {
 }
 
 #options {
-  height: 100px;
+  height: 120px;
 }
 
 #play {
@@ -140,10 +140,27 @@ input {
   background-color: rgba(0, 0, 0, 0.1);
 }
 
+#message {
+  position: relative;
+  top: 15px;
+  font-size: 40px;
+  margin-bottom: 20px;
+  line-height: 110px;
+  height: 84px;
+}
+
+#message[hidden] {
+  display: none;
+}
+
 #scores {
   position: relative;
   top: 15px;
   margin-bottom: 20px;
+}
+
+#scores[hidden] {
+  display: none;
 }
 
 .score {

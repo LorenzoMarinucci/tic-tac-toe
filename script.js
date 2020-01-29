@@ -12,7 +12,9 @@ const cells = document.querySelectorAll(".cell"),
   player2Name = document.getElementById("player2Name"),
   player1Div = document.getElementById("player1Score"),
   player2Div = document.getElementById("player2Score"),
-  tiesDiv = document.getElementById("ties");
+  tiesDiv = document.getElementById("ties"),
+  message = document.getElementById("message"),
+  scores = document.getElementById("scores");
 
 let player1 = null,
   player2 = null;
@@ -65,14 +67,28 @@ const Gameboard = (() => {
         )
       )
     ) {
-      if (GameInfo.isPlayerOneTurn)
+      if (GameInfo.isPlayerOneTurn) {
         player1Div.childNodes[2].textContent = ++player1.score;
-      else player2Div.childNodes[2].textContent = ++player2.score;
-      reset();
+        message.textContent = `${player1.name} `;
+      } else {
+        player2Div.childNodes[2].textContent = ++player2.score;
+        message.textContent = `${player2.name} `;
+      }
+      message.textContent += "wins!";
+      GameDisplay.toggleMessage();
+      setTimeout(() => {
+        reset();
+        GameDisplay.toggleMessage();
+      }, 1500);
       GameInfo.PlayerOneStarts = !GameInfo.PlayerOneStarts;
       GameInfo.isPlayerOneTurn = GameInfo.PlayerOneStarts;
     } else if (_checkTie()) {
-      reset();
+      message.textContent = "It's a tie!";
+      GameDisplay.toggleMessage();
+      setTimeout(() => {
+        reset();
+        GameDisplay.toggleMessage();
+      }, 1500);
       tiesDiv.childNodes[2].textContent =
         1 + parseInt(tiesDiv.childNodes[2].textContent);
       GameInfo.PlayerOneStarts = !GameInfo.PlayerOneStarts;
@@ -96,11 +112,13 @@ const GameDisplay = (() => {
       _home.toggleAttribute("active");
       _game.toggleAttribute("active");
     },
-    adjustWidth = sum => {
-      console.log(sum);
-      container.style.width = (sum > 410 ? sum + 60 : CONTAINER_WIDTH) + "px";
+    adjustWidth = sum =>
+      (container.style.width = (sum > 410 ? sum + 60 : CONTAINER_WIDTH) + "px"),
+    toggleMessage = () => {
+      scores.toggleAttribute("hidden");
+      message.toggleAttribute("hidden");
     };
-  return { changeGameStatus, adjustWidth };
+  return { changeGameStatus, adjustWidth, toggleMessage };
 })();
 
 const GameInfo = (() => {
