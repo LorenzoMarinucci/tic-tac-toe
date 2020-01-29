@@ -68,7 +68,8 @@ const Gameboard = (() => {
       alert("WIN");
     else if (_checkTie()) {
       reset();
-      tiesDiv.childNodes[2].textContent = ++parseInt(tiesDiv[2].textContent);
+      tiesDiv.childNodes[2].textContent =
+        1 + parseInt(tiesDiv.childNodes[2].textContent);
       GameInfo.PlayerOneStarts = !GameInfo.PlayerOneStarts;
       GameInfo.isPlayerOneTurn = GameInfo.PlayerOneStarts;
     } else GameInfo.isPlayerOneTurn = !GameInfo.isPlayerOneTurn;
