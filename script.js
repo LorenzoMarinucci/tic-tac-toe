@@ -1,10 +1,31 @@
 "use strict";
 
 const cells = document.querySelectorAll(".cell"),
+  container = document.getElementById("container"),
+  CONTAINER_WIDTH = container.offsetWidth,
   modeSelectors = document.querySelectorAll(".mode"),
   play = document.getElementById("play"),
   goHome = document.getElementById("goHome"),
-  restart = document.getElementById("restart");
+  restart = document.getElementById("restart"),
+  pvpForm = document.getElementById("pvp"),
+  player1Name = document.getElementById("player1Name"),
+  player2Name = document.getElementById("player2Name"),
+  player1Div = document.getElementById("player1Score"),
+  player2Div = document.getElementById("player2Score"),
+  tiesDiv = document.getElementById("ties");
+
+let player1 = null,
+  player2 = null;
+
+const Prototype = () => {
+  const addPoint = () => null;
+};
+
+const Player = input => {
+  const name = input;
+  let points = 0;
+  return { name, points };
+};
 
 const Gameboard = (() => {
   const _combinations = [
@@ -60,17 +81,17 @@ const Gameboard = (() => {
 })();
 
 const GameDisplay = (() => {
-  let _inGame = false;
   const _home = document.getElementById("home"),
     _game = document.getElementById("game"),
     changeGameStatus = () => {
-      _inGame = !_inGame;
       _home.toggleAttribute("active");
       _game.toggleAttribute("active");
     },
-    resetGame = 0,
-    inGame = () => _inGame;
-  return { changeGameStatus, inGame };
+    adjustWidth = sum => {
+      console.log(sum);
+      container.style.width = (sum > 410 ? sum + 60 : CONTAINER_WIDTH) + "px";
+    };
+  return { changeGameStatus, adjustWidth };
 })();
 
 const GameInfo = (() => {
@@ -94,13 +115,33 @@ modeSelectors.forEach(mode =>
       modeSelectors[0].toggleAttribute("selected");
       modeSelectors[1].toggleAttribute("selected");
       GameInfo.isPvp = !GameInfo.isPvP;
+      pvpForm.toggleAttribute("active");
     }
   })
 );
 
-play.addEventListener("click", () => GameDisplay.changeGameStatus());
+play.addEventListener("click", () => {
+  player1 = player1Name.value ? Player(player1Name.value) : Player("Player 1");
+  player1Div.childNodes[0].textContent = player1.name;
+  player1Div.childNodes[1].textContent = player1.score;
+  player1Name.value = null;
+  if (GameInfo.isPvP)
+    player2 = player2Name.value
+      ? Player(player2Name.value)
+      : Player("Player 2");
+  else player2 = Player("AI");
+  player2Div.childNodes[0].textContent = player2.name;
+  player2Div.childNodes[1].textContent = player2.score;
+  player2Name.value = null;
+  GameDisplay.changeGameStatus();
+  GameDisplay.adjustWidth(
+    player1Div.offsetWidth + player2Div.offsetWidth + tiesDiv.offsetWidth + 40
+  );
+});
+
 goHome.addEventListener("click", () => {
   GameDisplay.changeGameStatus();
+  Gameboard.reset();
 });
 
 restart.addEventListener("click", () => {
