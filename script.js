@@ -37,6 +37,7 @@ const Gameboard = (() => {
     possibleMoves[move].toggleAttribute("marked");
     return parseInt(possibleMoves[move].getAttribute("data-index"));
   };
+  const _impossibleMode = () => {};
   const _combinations = [
       [0, 1, 2],
       [3, 4, 5],
@@ -91,10 +92,14 @@ const Gameboard = (() => {
       GameInfo.isPlayerOneTurn = GameInfo.PlayerOneStarts;
       GameDisplay.toggleMessage();
       GameDisplay.toggleCells(winningCombination);
+      restart.toggleAttribute("disabled");
+      goHome.toggleAttribute("disabled");
       setTimeout(() => {
         reset();
         GameDisplay.toggleMessage();
         GameDisplay.toggleCells(winningCombination);
+        restart.toggleAttribute("disabled");
+        goHome.toggleAttribute("disabled");
         if (!GameInfo.isPvP && !GameInfo.isPlayerOneTurn) _AImove();
       }, 2000);
     } else if (_checkTie()) {
@@ -120,13 +125,12 @@ const Gameboard = (() => {
       cell.textContent = "";
       cell.removeAttribute("marked");
     });
+    if (!GameInfo.isPvP && !GameInfo.isPlayerOneTurn) _AImove();
   };
   const _AImove = () => {
-    setTimeout(() => {
-      let markedCell = _currentMode();
-      _gameboard[markedCell] = "O";
-      _processTurn(markedCell);
-    }, 500);
+    let markedCell = _currentMode();
+    _gameboard[markedCell] = "O";
+    _processTurn(markedCell);
   };
   return { input, reset, changeCurrentMode };
 })();
@@ -207,8 +211,8 @@ goHome.addEventListener("click", () => {
 });
 
 restart.addEventListener("click", () => {
-  Gameboard.reset();
   GameInfo.isPlayerOneTurn = GameInfo.PlayerOneStarts;
+  Gameboard.reset();
 });
 
 difficultyButtons.forEach(button =>
