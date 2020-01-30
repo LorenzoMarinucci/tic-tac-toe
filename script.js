@@ -28,17 +28,30 @@ const Player = input => {
 };
 
 const Gameboard = (() => {
+  const _easyMode = () => {
+    let possibleMoves = Array.from(cells).filter(
+        cell => !cell.hasAttribute("marked")
+      ),
+      move = Math.floor(Math.random() * possibleMoves.length);
+    possibleMoves[move].textContent = "O";
+    possibleMoves[move].toggleAttribute("marked");
+    return parseInt(possibleMoves[move].getAttribute("data-index"));
+  };
   const _combinations = [
-    [0, 1, 2],
-    [3, 4, 5],
-    [6, 7, 8],
-    [0, 3, 6],
-    [1, 4, 7],
-    [2, 5, 8],
-    [0, 4, 8],
-    [2, 4, 6]
-  ];
-  let _gameboard = new Array(0, 0, 0, 0, 0, 0, 0, 0, 0);
+      [0, 1, 2],
+      [3, 4, 5],
+      [6, 7, 8],
+      [0, 3, 6],
+      [1, 4, 7],
+      [2, 5, 8],
+      [0, 4, 8],
+      [2, 4, 6]
+    ],
+    changeCurrentMode = () => {
+      _currentMode = GameInfo.easy ? _easyMode : _impossibleMode;
+    };
+  let _gameboard = new Array(0, 0, 0, 0, 0, 0, 0, 0, 0),
+    _currentMode = _easyMode;
   const _render = element => {
     element.textContent = _gameboard[element.getAttribute("data-index")];
   };
@@ -56,10 +69,11 @@ const Gameboard = (() => {
       : "O";
     e.target.toggleAttribute("marked");
     _render(e.target);
+    _processTurn(parseInt(e.target.getAttribute("data-index")));
+  };
+  const _processTurn = index => {
     let winningCombination = _checkWinner(
-      _combinations.filter(array =>
-        array.includes(parseInt(e.target.getAttribute("data-index")))
-      )
+      _combinations.filter(array => array.includes(index))
     );
     if (winningCombination) {
       if (GameInfo.isPlayerOneTurn) {
@@ -70,27 +84,32 @@ const Gameboard = (() => {
         message.textContent = `${player2.name} `;
       }
       message.textContent += "wins!";
+      GameInfo.PlayerOneStarts = !GameInfo.PlayerOneStarts;
+      GameInfo.isPlayerOneTurn = GameInfo.PlayerOneStarts;
       GameDisplay.toggleMessage();
       GameDisplay.toggleCells(winningCombination);
       setTimeout(() => {
         reset();
         GameDisplay.toggleMessage();
         GameDisplay.toggleCells(winningCombination);
+        if (!GameInfo.isPvP && !GameInfo.isPlayerOneTurn) _AImove();
       }, 2000);
+    } else if (_checkTie()) {
       GameInfo.PlayerOneStarts = !GameInfo.PlayerOneStarts;
       GameInfo.isPlayerOneTurn = GameInfo.PlayerOneStarts;
-    } else if (_checkTie()) {
       message.textContent = "It's a tie!";
       GameDisplay.toggleMessage();
       setTimeout(() => {
         reset();
         GameDisplay.toggleMessage();
+        if (!GameInfo.isPvP && !GameInfo.isPlayerOneTurn) _AImove();
       }, 1500);
       tiesDiv.childNodes[2].textContent =
         1 + parseInt(tiesDiv.childNodes[2].textContent);
-      GameInfo.PlayerOneStarts = !GameInfo.PlayerOneStarts;
-      GameInfo.isPlayerOneTurn = GameInfo.PlayerOneStarts;
-    } else GameInfo.isPlayerOneTurn = !GameInfo.isPlayerOneTurn;
+    } else {
+      GameInfo.isPlayerOneTurn = !GameInfo.isPlayerOneTurn;
+      if (!GameInfo.isPvP && !GameInfo.isPlayerOneTurn) _AImove();
+    }
   };
   const reset = () => {
     _gameboard = _gameboard.map(() => 0);
@@ -99,7 +118,14 @@ const Gameboard = (() => {
       cell.removeAttribute("marked");
     });
   };
-  return { input, reset };
+  const _AImove = () => {
+    setTimeout(() => {
+      let markedCell = _currentMode();
+      _gameboard[markedCell] = "O";
+      _processTurn(markedCell);
+    }, 500);
+  };
+  return { input, reset, changeCurrentMode };
 })();
 
 const GameDisplay = (() => {
@@ -126,8 +152,8 @@ const GameInfo = (() => {
   let PlayerOneStarts = true,
     isPlayerOneTurn = true,
     isPvP = false,
-    easyMode = true;
-  return { PlayerOneStarts, isPlayerOneTurn, isPvP, easyMode };
+    easy = true;
+  return { PlayerOneStarts, isPlayerOneTurn, isPvP, easy };
 })();
 
 cells.forEach(cell =>
@@ -186,7 +212,8 @@ difficultyButtons.forEach(button =>
   button.addEventListener("click", e => {
     if (!e.target.hasAttribute("selected")) {
       difficultyButtons.forEach(button => button.toggleAttribute("selected"));
-      GameInfo.easyMode = !GameInfo.easyMode;
+      GameInfo.easy = !GameInfo.easy;
+      Gameboard.changeCurrentMode();
     }
   })
 );

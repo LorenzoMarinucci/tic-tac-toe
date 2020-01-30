@@ -76,6 +76,10 @@ input {
   padding-left: 3px;
 }
 
+#player2Name {
+  margin-top: 20px;
+}
+
 #pvp:not([active]) {
   display: none;
 }
