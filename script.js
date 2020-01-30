@@ -76,6 +76,9 @@ const Gameboard = (() => {
       _combinations.filter(array => array.includes(index))
     );
     if (winningCombination) {
+      Array.from(cells)
+        .filter(cell => !cell.hasAttribute("marked"))
+        .forEach(cell => cell.toggleAttribute("marked"));
       if (GameInfo.isPlayerOneTurn) {
         player1Div.childNodes[2].textContent = ++player1.score;
         message.textContent = `${player1.name} `;
