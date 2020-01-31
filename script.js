@@ -21,6 +21,8 @@ const cells = document.querySelectorAll(".cell"),
 let player1 = null,
   player2 = null;
 
+let it = 0;
+
 const Player = input => {
   const name = input;
   let score = 0;
@@ -37,7 +39,51 @@ const Gameboard = (() => {
     possibleMoves[move].toggleAttribute("marked");
     return parseInt(possibleMoves[move].getAttribute("data-index"));
   };
-  const _impossibleMode = () => {};
+  const _impossibleMode = () => {
+    let asd = (currentGameboard, currentPlayer) => {
+      it++;
+      let possibleWinner = _combinations.find(
+        combination =>
+          (currentGameboard[combination[0]] == "X" &&
+            currentGameboard[combination[1]] == "X" &&
+            currentGameboard[combination[2]] == "X") ||
+          (currentGameboard[combination[0]] == "O" &&
+            currentGameboard[combination[1]] == "O" &&
+            currentGameboard[combination[2]] == "O")
+      );
+      if (possibleWinner) {
+        return currentGameboard[possibleWinner[0]] == "X"
+          ? { score: currentPlayer * -1 }
+          : { score: currentPlayer };
+      }
+
+      let obj = {
+        move: -1,
+        score: -2
+      };
+
+      for (let i = 0; i < 9; i++) {
+        if (!currentGameboard[i]) {
+          let newBoard = currentGameboard.slice();
+          newBoard[i] = currentPlayer == 1 ? "O" : "X";
+          let moveScore = -asd(newBoard.slice(), -1 * currentPlayer).score;
+          if (moveScore > obj.score) {
+            obj.move = i;
+            obj.score = moveScore;
+          }
+        }
+      }
+
+      if (obj.move == -1) obj.score = 0;
+      return obj;
+    };
+    let getMove = asd(_gameboard.slice(), 1).move;
+    cells[getMove].textContent = "O";
+    cells[getMove].toggleAttribute("marked");
+    console.log(it);
+    it = 0;
+    return getMove;
+  };
   const _combinations = [
       [0, 1, 2],
       [3, 4, 5],
@@ -130,6 +176,7 @@ const Gameboard = (() => {
   const _AImove = () => {
     let markedCell = _currentMode();
     _gameboard[markedCell] = "O";
+    console.log(_gameboard);
     _processTurn(markedCell);
   };
   return { input, reset, changeCurrentMode };
