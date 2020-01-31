@@ -224,3 +224,7 @@ difficultyButtons.forEach(button =>
     }
   })
 );
+
+window.setInterval(() => {
+  play.toggleAttribute("active");
+}, 500);
